@@ -13,18 +13,18 @@ export default function LandingPage(props) {
     props.setIsLoggedIn(false);
     navigate("/");
   };
-
+  const checklogin = async () => {
+    const res = await fetch("/user/auth");
+    const data = await res.json();
+    console.log(data);
+    if (data.msg === "Login to Proceed") {
+      props.setIsLoggedIn(false);
+    } else {
+      props.setIsLoggedIn(true);
+    }
+  };
   useEffect(() => {
-    const checklogin = async () => {
-      const res = await fetch("/user/auth");
-      const data = await res.json();
-      console.log(data);
-      if (data.msg === "Login to Proceed") {
-        props.setIsLoggedIn(false);
-      } else {
-        props.setIsLoggedIn(true);
-      }
-    };
+   
     checklogin();
   }, []);
 

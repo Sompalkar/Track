@@ -23,15 +23,19 @@ export default function Login(props) {
       password: "", // Corrected the typo here
     });
 
-    const res = await fetch("/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
     try {
+      const res = await fetch("/user/login", { // Adjust the URL based on your server setup
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      // if (!res.ok) {
+      //   throw new Error(`HTTP error! Status: ${res.status}`);
+      // }
+
       const data = await res.json();
       if (data.errors) {
         setError(data.errors);
@@ -41,11 +45,12 @@ export default function Login(props) {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Error parsing JSON response:", error);
+      console.error("Error during login:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div>
