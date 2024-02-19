@@ -4,8 +4,8 @@
   "description": "backend app for expense-tracker-app",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "dev": "nodemon app.js",
+    "start": "node app.js",
     "build": " npm install --force"
   },
   "author": "Bug Slicers",
