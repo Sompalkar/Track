@@ -12,106 +12,86 @@ export default function Login(props) {
 
   const [error, setError] = useState({
     email: "",
-    password: "", // Corrected the typo here
+    password: "",
   });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError({
       email: "",
-      password: "", // Corrected the typo here
+      password: "",
     });
 
-    try {
-      const res = await fetch("/user/login", { // Adjust the URL based on your server setup
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+    const res = await fetch("/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-      // if (!res.ok) {
-      //   throw new Error(`HTTP error! Status: ${res.status}`);
-      // }
+    const data = await res.json();
 
-      const data = await res.json();
-      if (data.errors) {
-        setError(data.errors);
-        console.log(error);
-      } else {
-        props.closeModalLogin();
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-    } finally {
+    if (data.errors) {
+      setError(data.errors);
+      console.log(error);
       setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      props.closeModalLogin();
+      navigate("/dashboard");
     }
   };
-
 
   return (
     <div>
       <div className="p-6 bg-rp-black text-white rounded-xl font-lexend">
-        <h1 className="font-bold text-2xl ">Log In</h1>
-        <p className="">Please Log in to account to manage expenses</p>
-        <hr className="my-4 "></hr>
+        <h1 className="font-bold text-2xl">Log In</h1>
+        <p>Please Log in to account to manage expenses</p>
+        <hr className="my-4" />
+
         <div className="grid grid-cols-12">
-          <label
-            htmlFor="email"
-            className="font-bold flex items-center col-span-4"
-          >
+          <label htmlFor="email" className="font-bold flex items-center col-span-4">
             Email
           </label>
           <input
             type="email"
             value={user.email}
-            onChange={(e) => {
-              const tempUser = { ...user };
-              tempUser.email = e.target.value;
-              setUser(tempUser);
-            }}
+            onChange={handleInputChange}
+            name="email"
             placeholder="Enter Email"
             className="p-2 m-2 inline-block outline-none  col-span-8 bg-jp-black rounded-sm placeholder-rp-yellow"
           />
-          <span className="text-sm text-red-500 col-start-5 col-span-8">
-            {error.email}
-          </span>
+          <span className="text-sm text-red-500 col-start-5 col-span-8">{error.email}</span>
         </div>
 
-        <div className="grid grid-cols-12 ">
-          <label
-            htmlFor="password"
-            className="font-bold flex items-center col-span-4"
-          >
+        <div className="grid grid-cols-12">
+          <label htmlFor="password" className="font-bold flex items-center col-span-4">
             Password
           </label>
           <input
             type="password"
             value={user.password}
-            onChange={(e) => {
-              const tempUser = { ...user };
-              tempUser.password = e.target.value;
-              setUser(tempUser);
-            }}
-            placeholder="Enter Password"
+            onChange={handleInputChange}
             name="password"
+            placeholder="Enter Password"
             className="p-2 m-2 inline-block outline-none  col-span-8 bg-jp-black rounded-sm placeholder-rp-yellow"
-          ></input>
-          <span className="text-sm text-red-500 col-start-5 col-span-8">
-            {error.password}
-          </span>
+          />
+          <span className="text-sm text-red-500 col-start-5 col-span-8">{error.password}</span>
         </div>
+
         <div className="mt-4">
           {isLoading ? (
-            <ReactLoading
-              type="bubbles"
-              color="#F5A302"
-              height={50}
-              width={50}
-            />
+            <ReactLoading type="bubbles" color="#F5A302" height={50} width={50} />
           ) : (
             <button
               onClick={handleLogin}
@@ -121,8 +101,9 @@ export default function Login(props) {
             </button>
           )}
         </div>
+
         <span className="flex justify-center py-2">
-          <span className="pr-1">Don't have an account , </span>
+          <span className="pr-1">Don't have an account, </span>
           <span
             className="text-rp-yellow cursor-pointer"
             onClick={() => {
