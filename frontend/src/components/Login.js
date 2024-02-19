@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
+import axios from "axios"; // Import axios
 
 export default function Login(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,26 +32,28 @@ export default function Login(props) {
       password: "",
     });
 
-    const res = await fetch("/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+    try {
+      const response = await axios.post("/user/login", user, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = await res.json();
-
-    if (data.errors) {
-      setError(data.errors);
-      console.log(error);
+      // Assuming the server returns an object with errors if any
+      if (response.data.errors) {
+        setError(response.data.errors);
+        console.log(error);
+      } else {
+        props.closeModalLogin();
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    } finally {
       setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      props.closeModalLogin();
-      navigate("/dashboard");
     }
   };
+
 
   return (
     <div>
