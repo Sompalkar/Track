@@ -12,7 +12,7 @@ export default function Login(props) {
 
   const [error, setError] = useState({
     email: "",
-    password: "",
+    password: "", // Corrected the typo here
   });
 
   const handleLogin = async (e) => {
@@ -20,7 +20,7 @@ export default function Login(props) {
     setIsLoading(true);
     setError({
       email: "",
-      passowrd: "",
+      password: "", // Corrected the typo here
     });
 
     const res = await fetch("/user/login", {
@@ -30,15 +30,20 @@ export default function Login(props) {
       },
       body: JSON.stringify(user),
     });
-    const data = await res.json();
-    if (data.errors) {
-      setError(data.errors);
-      console.log(error);
+
+    try {
+      const data = await res.json();
+      if (data.errors) {
+        setError(data.errors);
+        console.log(error);
+      } else {
+        props.closeModalLogin();
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+    } finally {
       setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      props.closeModalLogin();
-      navigate("/dashboard");
     }
   };
 
